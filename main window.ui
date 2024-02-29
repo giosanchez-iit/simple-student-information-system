@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainWindow</class>
+ <widget class="QMainWindow" name="mainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QComboBox" name="courseSelectComboBox">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>20</y>
+      <width>421</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="selectCourseLabel">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>20</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select Course:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="courseCreate">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>20</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add New Course</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="courseDelete">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>20</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgb(232, 8, 62);
+color:rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>Delete This Course</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="studentCreate">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>650</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:  #02864a;
+color: #fff;</string>
+    </property>
+    <property name="text">
+     <string>Add New Student</string>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="studentListTable">
+    <property name="geometry">
+     <rect>
+      <x>35</x>
+      <y>70</y>
+      <width>931</width>
+      <height>561</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QTableWidget{
+	selection-color: #fff;
+	selection-background-color: #573CFA;
+}
+
+QHeaderView{
+	background-color: #02864a;
+	color: #fff;
+}
+
+QHeaderView::section{
+	background-color:  #02864a;
+	color: #fff;
+}</string>
+    </property>
+    <column>
+     <property name="text">
+      <string>ID Number</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Name</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Year Level</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Gender</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Enrollment Status</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Edit</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>Delete</string>
+     </property>
+    </column>
+   </widget>
+   <widget class="QPushButton" name="courseUpdate">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>20</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgb(251, 141, 26);
+color:rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>Edit This Course</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
