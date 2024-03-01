@@ -146,7 +146,7 @@ class Ui_mainWindow(object):
     
     def open_course_popup(self):
         self.course_popup = QtWidgets.QDialog()
-        self.ui_course_popup.setupUi(self.course_popup)
+        self.ui_course_popup.setupUi(self.course_popup,  mode = 'create')
         self.course_popup.finished.connect(self.update_course_combo_box)
         self.course_popup.exec_()
     
