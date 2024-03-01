@@ -1,4 +1,7 @@
+import csv
+from functools import partial
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QTableWidgetItem, QPushButton
 from gui_course import *
 from gui_student import *
 from utils import Utils
@@ -12,6 +15,7 @@ class Ui_mainWindow(object):
         
         self.ui_course_popup = CoursePopup()
         self.ui_student_popup = StudentPopup()
+        self.utils_instance = Utils()
         
         # Graphics Interface Setup
         
@@ -127,7 +131,6 @@ class Ui_mainWindow(object):
         # Update
         self.courseSelectComboBox.currentIndexChanged.connect(self.update_student_table)
         self.utils_instance = Utils()
-        self.utils_instance.edit_student_signal.connect(self.handle_edit_student)
         
         # List
         self.update_course_combo_box();
@@ -148,10 +151,14 @@ class Ui_mainWindow(object):
         self.student_popup.finished.connect(self.update_student_table)
         self.student_popup.exec_()
         
-    def handle_edit_student(self, id_number):
-        # Handle the edit student signal
-        print("Edit student requested for ID:", id_number)
-        
+    def edit_student_popup(self, id_number):
+        student_info = Utils.studentRead(Utils.studentFind(id_number))
+        id_number, name, yr_level, gender, course_code = student_info[:5]
+        self.student_popup = QtWidgets.QDialog()
+        self.ui_student_popup.setupUi(self.student_popup, mode='edit', id_number=id_number, name=name, gender=gender, yr_level=yr_level, course_code=course_code)
+        self.student_popup.finished.connect(self.update_student_table)
+        self.student_popup.exec_()
+    
     def update_course_combo_box(self):
         self.courseSelectComboBox.clear()
         self.courseSelectComboBox.addItem("- All Courses -")
@@ -162,8 +169,42 @@ class Ui_mainWindow(object):
         self.studentListTable.setRowCount(0)
         course = self.courseSelectComboBox.currentText()
         if course != '':
-            Utils.studentList(self.studentListTable, "students.csv", course.split()[0])
-        
+            self.studentList("students.csv", course.split()[0])
+    
+    # List
+    
+    def studentList(self, file_path, course_to_display):
+        qtable_widget = self.studentListTable  # Get the QTableWidget from the class instance
+        qtable_widget.clear()
+        # Read data from CSV file and populate QTableWidget
+        with open(file_path, newline='') as csvfile:
+            reader = csv.reader(csvfile)
+            next(reader)  # Skip header
+            for row in reader:
+                # Check if the course code matches the course to display
+                if row[4] == course_to_display or course_to_display == '-':
+                    # Insert a new row
+                    row_position = qtable_widget.rowCount()
+                    qtable_widget.insertRow(row_position)
+                    # Populate columns
+                    for column, value in enumerate(row):  # Include all columns
+                        item = QTableWidgetItem(value)
+                        qtable_widget.setItem(row_position, column, item)
+                    # Add 'edit' button
+                    edit_button = QPushButton('Edit')
+                    edit_button.setStyleSheet("background-color:rgb(251, 141, 26); color:rgb(255, 255, 255);")
+                    id_number = row[0]
+                    # Connect the 'clicked' signal of the button to the edit_student_popup method of Ui_mainWindow class
+                    edit_button.clicked.connect(lambda _, id_number=id_number: self.edit_student_popup(id_number))
+
+                    qtable_widget.setCellWidget(row_position, 6, edit_button)
+                    # Add 'delete' button
+                    delete_button = QPushButton('Delete')
+                    delete_button.setStyleSheet("background-color:rgb(232, 8, 62); color:rgb(255, 255, 255);")
+                    qtable_widget.setCellWidget(row_position, 7, delete_button)
+                    # Set Headers (You may want to set headers outside the loop)
+                    qtable_widget.setHorizontalHeaderLabels(["ID Number", "Name", "Year Level", "Gender", "Course Code", "Enrollment Status", " ", " "])
+            
     # Retranslate elements in setupUI
     
     def retranslateUi(self, mainWindow):
@@ -192,7 +233,10 @@ class Ui_mainWindow(object):
     def closeEvent(self, event):
         # Emit the 'closed' signal when the dialog is closed
         self.closed.emit()
+        
 
+def on_edit_student_signal_received(id_number):
+    print(f"Edit student signal emitted with ID number: {id_number}")
 
 if __name__ == "__main__":
     import sys
