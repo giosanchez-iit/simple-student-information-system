@@ -81,7 +81,27 @@ class Utils(QObject):
                 writer.writerows(rows)
             return True
         else:
-            return False           
+            return False
+
+    def studentDelete(id_num):
+        file_path = 'students.csv'
+        try:
+            #search for row based on id number
+            row_number = Utils.studentFind(id_num)
+            with open(file_path, 'r', newline='') as csvfile:
+                rows = list(csv.reader(csvfile))
+            
+            #delete line given info of row number
+            del rows[row_number - 1]
+
+            with open(file_path, 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerows(rows)
+            
+            return True
+        except Exception as e:
+            print(e)
+            return False                    
 
 
     # Helper functions for the Student CRUDL Implementations
@@ -247,20 +267,42 @@ class Utils(QObject):
 
     def courseDelete(course_code):
         try:
-            with open('courses.csv', 'r', newline='') as csvfile:
-                rows = list(csv.DictReader(csvfile))
+            # Read all rows from the CSV file
+            with open('students.csv', 'r', newline='') as student_file:
+                students = list(csv.DictReader(student_file))
 
-            new_rows = [row for row in rows if row['Course Code'] != course_code]
+            # Update the enrollment status for all students with the given course code
+            for student in students:
+                if student['Course Code'] == course_code:
+                    student['Course Code'] = ''
+                    student['Enrollment Status'] = 'Not Enrolled'
 
-            with open('courses.csv', 'w', newline='') as csvfile:
-                fieldnames = ['Course Code', 'Course Description']
-                writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            # Write the modified student data back to the CSV file
+            with open('students.csv', 'w', newline='') as student_file:
+                fieldnames = ['ID Number', 'Name', 'Year Level', 'Gender', 'Course Code', 'Enrollment Status']
+                writer = csv.DictWriter(student_file, fieldnames=fieldnames)
                 writer.writeheader()
-                writer.writerows(new_rows)
+                writer.writerows(students)
+
+            # Remove the course from the courses.csv file
+            with open('courses.csv', 'r', newline='') as course_file:
+                courses = list(csv.DictReader(course_file))
+
+            # Filter out the course with the given course code
+            new_courses = [course for course in courses if course['Course Code'] != course_code]
+
+            # Write the updated course data back to the CSV file
+            with open('courses.csv', 'w', newline='') as course_file:
+                fieldnames = ['Course Code', 'Course Description']
+                writer = csv.DictWriter(course_file, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(new_courses)
+
             return True
         except Exception as e:
             print(e)
             return False
+
 
     def courseList(combo_box, file_path):
         # Read data from CSV file and populate combo box

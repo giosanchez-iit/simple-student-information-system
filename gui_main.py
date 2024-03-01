@@ -37,6 +37,12 @@ class Ui_mainWindow(object):
         self.courseCreate.setGeometry(QtCore.QRect(540, 20, 131, 23))
         self.courseCreate.setObjectName("courseCreate")
         
+        self.courseUpdate = QtWidgets.QPushButton(self.centralwidget)
+        self.courseUpdate.setGeometry(QtCore.QRect(710, 20, 121, 23))
+        self.courseUpdate.setStyleSheet("background-color:rgb(251, 141, 26);\n"
+        "color:rgb(255, 255, 255);")
+        self.courseUpdate.setObjectName("courseUpdate")
+        
         self.courseDelete = QtWidgets.QPushButton(self.centralwidget)
         self.courseDelete.setGeometry(QtCore.QRect(840, 20, 121, 23))
         self.courseDelete.setStyleSheet("background-color:rgb(232, 8, 62); color:rgb(255, 255, 255);")
@@ -105,16 +111,13 @@ class Ui_mainWindow(object):
         self.studentListTable.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Fixed)
         self.studentListTable.setSelectionMode(QtWidgets.QAbstractItemView.NoSelection)
         self.studentListTable.setFocusPolicy(QtCore.Qt.NoFocus)
-
-
-        self.courseUpdate = QtWidgets.QPushButton(self.centralwidget)
-        self.courseUpdate.setGeometry(QtCore.QRect(710, 20, 121, 23))
-        self.courseUpdate.setStyleSheet("background-color:rgb(251, 141, 26);\n"
-        "color:rgb(255, 255, 255);")
-        self.courseUpdate.setObjectName("courseUpdate")
         
+        # Implement Course Buttons Behaviour
+        self.courseSelectComboBox.currentIndexChanged.connect(self.update_button_state)
+        self.update_button_state()
+        
+        # More UI Stuff...
         mainWindow.setCentralWidget(self.centralwidget)
-
         self.retranslateUi(mainWindow)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
         
@@ -130,12 +133,14 @@ class Ui_mainWindow(object):
         
         # Update
         self.courseSelectComboBox.currentIndexChanged.connect(self.update_student_table)
-        self.utils_instance = Utils()
+        self.courseUpdate.clicked.connect(self.edit_course_popup)
         
         # List
         self.update_course_combo_box();
         self.update_student_table();
         
+        # Delete
+        self.courseDelete.clicked.connect(self.delete_course_popup)
              
     # Method definitions for setupUI functionality
     
@@ -158,6 +163,36 @@ class Ui_mainWindow(object):
         self.ui_student_popup.setupUi(self.student_popup, mode='edit', id_number=id_number, name=name, gender=gender, yr_level=yr_level, course_code=course_code)
         self.student_popup.finished.connect(self.update_student_table)
         self.student_popup.exec_()
+        
+    def delete_student_popup(self, id_number):
+        student_info = Utils.studentRead(Utils.studentFind(id_number))
+        id_number, name, yr_level, gender, course_code = student_info[:5]
+        self.student_popup = QtWidgets.QDialog()
+        self.ui_student_popup.setupUi(self.student_popup, mode='delete', id_number=id_number, name=name, gender=gender, yr_level=yr_level, course_code=course_code)
+        self.student_popup.finished.connect(self.update_student_table)
+        self.student_popup.exec_()
+    
+    def edit_course_popup(self):
+        selected_course = self.courseSelectComboBox.currentText()
+        if selected_course != '- All Courses -':
+            course_code = selected_course.split()[0]
+            course_info = Utils.courseRead(Utils.courseFind(course_code))
+            course_code, course_description = course_info[:2]
+            self.course_popup = QtWidgets.QDialog()
+            self.ui_course_popup.setupUi(self.course_popup, mode='edit', course_code=course_code, course_description=course_description)
+            self.course_popup.finished.connect(self.update_course_combo_box)
+            self.course_popup.exec_()
+    
+    def delete_course_popup(self):
+        selected_course = self.courseSelectComboBox.currentText()
+        if selected_course != '- All Courses -':
+            course_code = selected_course.split()[0]
+            course_info = Utils.courseRead(Utils.courseFind(course_code))
+            course_code, course_description = course_info[:2]
+            self.course_popup = QtWidgets.QDialog()
+            self.ui_course_popup.setupUi(self.course_popup, mode='delete', course_code=course_code, course_description=course_description)
+            self.course_popup.finished.connect(self.update_course_combo_box)
+            self.course_popup.exec_()
     
     def update_course_combo_box(self):
         self.courseSelectComboBox.clear()
@@ -201,10 +236,25 @@ class Ui_mainWindow(object):
                     # Add 'delete' button
                     delete_button = QPushButton('Delete')
                     delete_button.setStyleSheet("background-color:rgb(232, 8, 62); color:rgb(255, 255, 255);")
+                    delete_button.clicked.connect(lambda _, id_number=id_number: self.delete_student_popup(id_number))
                     qtable_widget.setCellWidget(row_position, 7, delete_button)
                     # Set Headers (You may want to set headers outside the loop)
                     qtable_widget.setHorizontalHeaderLabels(["ID Number", "Name", "Year Level", "Gender", "Course Code", "Enrollment Status", " ", " "])
-            
+         
+    # Button Behaviour
+    def update_button_state(self):
+        selected_course = self.courseSelectComboBox.currentText()
+        if selected_course == '- All Courses -':
+            self.courseUpdate.setStyleSheet("background-color: gray; color: #fff;")
+            self.courseDelete.setStyleSheet("background-color: gray; color: #fff;")
+            self.courseUpdate.setEnabled(False)
+            self.courseDelete.setEnabled(False)
+        else:
+            self.courseUpdate.setStyleSheet("background-color: #FB8D1A; color: #fff;")
+            self.courseDelete.setStyleSheet("background-color: #E8083E; color: #fff;")
+            self.courseUpdate.setEnabled(True)
+            self.courseDelete.setEnabled(True)
+               
     # Retranslate elements in setupUI
     
     def retranslateUi(self, mainWindow):
@@ -233,10 +283,7 @@ class Ui_mainWindow(object):
     def closeEvent(self, event):
         # Emit the 'closed' signal when the dialog is closed
         self.closed.emit()
-        
 
-def on_edit_student_signal_received(id_number):
-    print(f"Edit student signal emitted with ID number: {id_number}")
 
 if __name__ == "__main__":
     import sys

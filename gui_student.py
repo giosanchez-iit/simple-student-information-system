@@ -115,7 +115,7 @@ class StudentPopup(QtWidgets.QDialog):
             self.student_create.setText("Add New Student")
             # Connect the button click to different methods based on the mode
             self.student_create.clicked.connect(self.addButtonClicked)
-        else:
+        elif mode == 'edit':
             # id number fields non-editable
             self.id_num1.setReadOnly(True)
             self.id_num2.setReadOnly(True)
@@ -142,6 +142,34 @@ class StudentPopup(QtWidgets.QDialog):
                 self.course_select.setCurrentIndex(-1)
             # Connect the button click to different methods based on the mode
             self.student_create.clicked.connect(self.editButtonClicked)
+        elif mode == 'delete':
+            # make all uneditable
+            self.id_num1.setEnabled(False)
+            self.id_num2.setEnabled(False)
+            self.student_name.setEnabled(False)
+            self.yr_level.setEnabled(False)
+            self.gender.setEnabled(False)
+            self.course_select.setEnabled(False)
+            self.enrolled_yes.setEnabled(False)
+            self.enrolled_no.setEnabled(False)
+            # modify contents
+            self.id_num1.setText(id_number.split('-')[0])
+            self.id_num2.setText(id_number.split('-')[1])
+            self.student_name.setText(name)
+            self.yr_level.setCurrentText(yr_level)
+            self.gender.setCurrentText(gender)
+            if course_code:
+                self.enrolled_yes.setChecked(True)
+                self.enrolled_no.setChecked(False)
+                self.course_select.setEnabled(False)
+                self.course_select.setCurrentIndex(Utils.courseFind(course_code)-2)
+            else:
+                self.enrolled_no.setChecked(True)
+                self.enrolled_yes.setChecked(False)
+                self.course_select.setEnabled(False)
+                self.course_select.setCurrentIndex(-1)
+            # Connect the button click to different methods based on the mode
+            self.student_create.clicked.connect(self.deleteButtonClicked)
         
         # update button accordingly
         self.checkButtonState(mode)
@@ -235,6 +263,24 @@ class StudentPopup(QtWidgets.QDialog):
             msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msg.exec_()
             
+    def deleteButtonClicked(self):
+        id_num = self.id_num1.text() + "-" + self.id_num2.text()
+        student_name = self.student_name.text()
+        yr_level = self.yr_level.currentText()
+        gender = self.gender.currentText()
+        course_code = self.course_select.currentText()
+        if course_code != "":
+            course_code = course_code.split()[0]
+        if Utils.studentValidate(id_num, student_name, yr_level, gender):
+            Utils.studentDelete(id_num)
+            msg = QtWidgets.QMessageBox()
+            msg.setIcon(QtWidgets.QMessageBox.Information)
+            msg.setWindowTitle("Success!")
+            msg.setText("Student successfully deleted.")
+            msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msg.exec_()
+            self.close()
+            
     def updateCourseComboBox(self):
         self.course_select.clear()
         Utils.courseList(self.course_select, "courses.csv")
@@ -242,30 +288,30 @@ class StudentPopup(QtWidgets.QDialog):
     
     def checkButtonState(self, mode):
         if self.enrolled_yes.isChecked():
-            if self.id_num1.text() and self.id_num2.text() and self.student_name.text() and self.course_select.currentText():
-                self.student_create.setEnabled(True)
-                if mode == 'create':
-                    self.student_create.setStyleSheet("background-color: #02864A; color: #fff;")
-                elif mode == 'edit':
-                    self.student_create.setStyleSheet("background-color: #FB8D1A; color: #fff;")
-            else:
-                self.student_create.setEnabled(False)
-                self.student_create.setStyleSheet("background-color: gray; color: #fff;")
+            fields_filled = self.id_num1.text() and self.id_num2.text() and self.student_name.text() and self.course_select.currentText()
         elif self.enrolled_no.isChecked():
-            if self.id_num1.text() and self.id_num2.text() and self.student_name.text():
-                self.student_create.setEnabled(True)
-                if mode == 'create':
-                    self.student_create.setStyleSheet("background-color: #02864A; color: #fff;")
-                elif mode == 'edit':
-                    self.student_create.setStyleSheet("background-color: #FB8D1A; color: #fff;")
-            else:
-                self.student_create.setEnabled(False)
-                self.student_create.setStyleSheet("background-color: gray; color: #fff;")
+            fields_filled = self.id_num1.text() and self.id_num2.text() and self.student_name.text()
+
+        if fields_filled:
+            self.student_create.setEnabled(True)
+            if mode == 'create':
+                color = "#02864A"
+            elif mode == 'edit':
+                color = "#FB8D1A"
+            elif mode == 'delete':
+                color = "#E8083E"
+        else:
+            self.student_create.setEnabled(False)
+            color = "gray"
+
+        self.student_create.setStyleSheet(f"background-color: {color}; color: #fff;")
                 
         if mode=='create':
             self.student_create.setText("Add New Student")
-        else:
+        elif mode == 'edit':
             self.student_create.setText("Edit Student")
+        elif mode == 'delete':
+            self.student_create.setText("Delete Student")
 
     def handle_combo_box_state(self):
         # Enable the combo box when "Yes" is selected, disable otherwise

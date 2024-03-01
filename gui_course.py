@@ -8,7 +8,7 @@ class CoursePopup(QtWidgets.QDialog):
     closed = QtCore.pyqtSignal()
     courseAdded = QtCore.pyqtSignal()
     
-    def setupUi(self, MainWindow):
+    def setupUi(self, MainWindow, mode, course_code=None, course_description=None):
         
         # Graphics Interface Setup
         
@@ -32,48 +32,102 @@ class CoursePopup(QtWidgets.QDialog):
         self.addCourseBtn.setGeometry(QtCore.QRect(190, 90, 101, 23))
         self.addCourseBtn.setStyleSheet("background-color: gray; color: #fff;")
         self.addCourseBtn.setObjectName("addCourseBtn")
-        self.addCourseBtn.setEnabled(True)  # Initially disabled
+        self.addCourseBtn.setEnabled(False)  # Initially disabled
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
-        # Functionality setup 
+        # Set Initial States
         
-        # connect signals to check if both fields are filled
-        self.course_code.textChanged.connect(self.check_fields_filled)
-        self.course_description.textChanged.connect(self.check_fields_filled)
+        # Adjust fields based on the mode
+        self.addCourseBtn.clicked.connect(self.closeEvent)
+        if mode == 'create':
+            self.addCourseBtn.setText("Add Course")
+            self.addCourseBtn.setStyleSheet("background-color: #02864A; color: #fff;")
+            self.course_code.setReadOnly(False)
+            self.course_description.setReadOnly(False)
+            self.course_code.setFocus()
+            self.course_code.clear()
+            self.course_description.clear()
+            self.course_code.setStyleSheet("background-color: #FFFFFF;")
+            self.course_description.setStyleSheet("background-color: #FFFFFF;")
+            self.addCourseBtn.clicked.connect(self.addCourse)
+        elif mode == 'edit':
+            self.addCourseBtn.setText("Edit Course")
+            self.addCourseBtn.setStyleSheet("background-color: #FB8D1A; color: #fff;")
+            self.course_code.setReadOnly(True)
+            self.course_description.setReadOnly(False)
+            self.course_code.setStyleSheet("background-color: #F0F0F0;")
+            self.course_description.setStyleSheet("background-color: #FFFFFF;")
+            self.course_code.setText(course_code)
+            self.course_description.setText(course_description)
+            self.course_description.setFocus()
+            self.addCourseBtn.clicked.connect(self.editCourse)
+            self.addCourseBtn.setEnabled(True)  # Enable the button for editing
+        elif mode == 'delete':
+            self.addCourseBtn.setText("Delete Course")
+            self.addCourseBtn.setStyleSheet("background-color: #E8083E; color: #fff;")
+            self.course_code.setReadOnly(True)
+            self.course_description.setReadOnly(True)
+            self.course_code.setStyleSheet("background-color: #F0F0F0;")
+            self.course_description.setStyleSheet("background-color: #F0F0F0;")
+            self.course_code.setText(course_code)
+            self.course_description.setText(course_description)
+            self.addCourseBtn.clicked.connect(self.deleteCourse)
+            self.addCourseBtn.setEnabled(True)  # Enable the button for deleting
 
-        # connect button clicked signal to the add_course method
-        self.addCourseBtn.clicked.connect(self.add_course)
-        
     # Method definitions for setupUI functionality
     
-    def check_fields_filled(self):
-        # Enable the button only when both text fields are filled
-        if self.course_code.text() and self.course_description.text():
-            self.addCourseBtn.setEnabled(True)
-            self.addCourseBtn.setStyleSheet("background-color: #02864a; color: #fff;")
-        else:
-            self.addCourseBtn.setEnabled(False)
-            self.addCourseBtn.setStyleSheet("background-color: gray; color: #fff;")
-
-    def add_course(self):
-        # add the details from the text fields into the CSV
+    def addCourse(self):
         course_code = self.course_code.text()
         course_description = self.course_description.text()
-        Utils.courseCreate(course_code, course_description)
+        if course_code and course_description:
+            Utils.courseCreate(course_code, course_description)
+            self.courseAdded.emit()
+            self.showSuccessMessage("Course added successfully!")
+        else:
+            self.showErrorMessage("Fill all text fields.")
 
-        # emit signal to update combo box in main window
-        self.courseAdded.emit()
-        
-        # create a message box to show successful operation
+    def editCourse(self):
+        course_code = self.course_code.text()
+        new_course_description = self.course_description.text()
+        if course_code and new_course_description:
+            Utils.courseUpdate(course_code, new_course_description)
+            self.courseAdded.emit()
+            self.close()
+            self.showSuccessMessage("Course edited successfully!")
+        else:
+            self.showErrorMessage("Fill all text fields.")
+
+    def deleteCourse(self):
+        course_code = self.course_code.text()
+        if Utils.courseDelete(course_code):
+            self.courseAdded.emit()
+            self.close()
+            self.showSuccessMessage("Course deleted successfully!")
+        else:
+            self.showErrorMessage("An error occurred while deleting the course.")
+
+    def showSuccessMessage(self, message):
         msg = QtWidgets.QMessageBox()
         msg.setIcon(QtWidgets.QMessageBox.Information)
         msg.setWindowTitle("Success")
-        msg.setText(f"{course_code} - {course_description} added successfully!")
+        msg.setText(message)
         msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
         msg.exec_()
-    
+
+    def showErrorMessage(self, message):
+        msg = QtWidgets.QMessageBox()
+        msg.setIcon(QtWidgets.QMessageBox.Warning)
+        msg.setWindowTitle("Error")
+        msg.setText(message)
+        msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        msg.exec_()
+        
+    def closeEvent(self, event):
+        # Get the selected course from the Ui_mainWindow instance
+        selected_course = self.parent().selected_course
+        if selected_course:
+            self.courseSelectComboBox.setCurrentText(selected_course)
 
     # Retranslate elements in setupUI
     
