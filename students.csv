@@ -1,5 +1,72 @@
 ID Number,Name,Year Level,Gender,Course Code,Enrollment Status
-2021-1200,Giovanni Kierani A. Sanchiano,3,Man,,Not Enrolled
 2022-0025,Gio Kiefer A. Sanchez,2,Man,BSCS,Enrolled
-2023-3202,Palindro M. Emordnilap,1,Man,,Not Enrolled
-2020-0001,Genea O. Ouos,4,Woman,BSNursing,Enrolled
+2023-0001,Hermione G. Patel,1,Woman,BSIT,Enrolled
+2023-0002,Perseus Q. Ocampo,1,Man,BSCS,Enrolled
+2023-0003,Saturnia F. Nguyen,1,Man,BSCHE,Enrolled
+2023-0004,Anansi J. Fernandez,1,Man,BSENE,Enrolled
+2023-0005,Ariadne T. Khan,1,Woman,BAPSYCH,Enrolled
+2023-0006,Eros P. Gonzalez,1,Man,BSPSYCH,Enrolled
+2023-0007,Hecate R. Das,1,Woman,BSBIO,Enrolled
+2023-0008,Achilles K. Li,1,Man,BSED-FIL,Enrolled
+2023-0009,Athena G. Kaur,1,Woman,BSE,Enrolled
+2023-0010,Odysseus C. Rodriguez,1,Man,,Not Enrolled
+2023-0011,Isis L. Chang,1,Woman,,Not Enrolled
+2022-0012,Theseus M. Abate,2,Man,BSCHE,Enrolled
+2022-0013,Durga N. Duong,2,Woman,BSENE,Not Enrolled
+2022-0014,Zeus A. Kim,2,Man,,Not Enrolled
+2022-0015,Orpheus S. Gupta,2,Woman,BSPSYCH,Enrolled
+2022-0016,Poseidon D. Tan,2,Man,BSBIO,Enrolled
+2022-0017,Artemis F. Nguyen,2,Woman,,Not Enrolled
+2022-0018,Hermes V. Sharma,2,Man,BSE,Enrolled
+2022-0019,Guinevere Y. Lim,2,Woman,,Not Enrolled
+2022-0020,Thor R. Patel,2,Man,BSCS,Enrolled
+2022-0021,Venus H. Lee,2,Woman,,Not Enrolled
+2021-0022,Atalanta E. Garcia,3,Man,BSENE,Enrolled
+2023-0023,Aphrodite Q. Sharma,1,Woman,BSIT,Enrolled
+2023-0024,Artemis R. Patel,1,Woman,BSCS,Enrolled
+2023-0025,Apollo S. Tran,1,Man,BSCHE,Enrolled
+2023-0026,Ares T. Nguyen,1,Man,BSENE,Enrolled
+2023-0027,Athena U. Das,1,Woman,BAPSYCH,Enrolled
+2023-0028,Atlas V. Lee,1,Man,BSPSYCH,Enrolled
+2023-0029,Balder W. Kim,1,Man,BSBIO,Enrolled
+2023-0030,Ceres X. Garcia,1,Woman,BSED-FIL,Enrolled
+2023-0031,Chronos Y. Sharma,1,Man,BSE,Enrolled
+2023-0032,Circe Z. Patel,1,Woman,BSIT,Enrolled
+2023-0033,Demeter A. Tran,1,Woman,BSCS,Enrolled
+2023-0034,Dionysus B. Nguyen,1,Man,BSCHE,Enrolled
+2023-0035,Eros C. Das,1,Man,BSENE,Enrolled
+2023-0036,Gaia D. Lee,1,Woman,BAPSYCH,Enrolled
+2023-0037,Hades E. Kim,1,Man,BSPSYCH,Enrolled
+2023-0038,Hecate F. Garcia,1,Woman,BSBIO,Enrolled
+2023-0039,Hephaestus G. Sharma,1,Man,BSED-FIL,Enrolled
+2023-0040,Hera H. Patel,1,Woman,BSE,Enrolled
+2023-0041,Hermes I. Tran,2,Man,BSIT,Enrolled
+2023-0042,Hestia J. Nguyen,2,Woman,BSCS,Enrolled
+2023-0043,Horae K. Das,2,Woman,BSCHE,Enrolled
+2023-0044,Hypnos L. Lee,2,Man,BSENE,Enrolled
+2023-0045,Janus M. Kim,2,Man,BAPSYCH,Enrolled
+2023-0046,Morpheus N. Garcia,2,Man,BSPSYCH,Enrolled
+2023-0047,Nemesis O. Sharma,2,Woman,BSBIO,Enrolled
+2023-0048,Nike P. Patel,2,Woman,BSED-FIL,Enrolled
+2023-0049,Pan Q. Tran,2,Man,BSE,Enrolled
+2023-0050,Persephone R. Nguyen,2,Woman,BSIT,Enrolled
+2023-0051,Poseidon S. Das,2,Man,BSCS,Enrolled
+2023-0052,Rhea T. Lee,2,Woman,BSCHE,Enrolled
+2023-0053,Triton U. Kim,2,Man,BSENE,Enrolled
+2023-0054,Tyche V. Garcia,2,Woman,BAPSYCH,Enrolled
+2023-0055,Thanatos W. Sharma,2,Man,BSPSYCH,Enrolled
+2023-0056,Theia X. Patel,2,Woman,BSBIO,Enrolled
+2023-0057,Thanatos Y. Tran,2,Man,BSED-FIL,Enrolled
+2023-0058,Zephyrus Z. Nguyen,2,Man,BSE,Enrolled
+2023-0059,Zeus A. Das,2,Man,BSIT,Enrolled
+2023-0060,Achilles B. Lee,2,Man,BSCS,Enrolled
+2023-0061,Adonis C. Sharma,2,Man,BSCHE,Enrolled
+2023-0062,Atalanta D. Patel,2,Woman,BSENE,Enrolled
+2023-0063,Calliope E. Kim,2,Woman,BAPSYCH,Enrolled
+2023-0064,Daphne F. Garcia,2,Woman,BSPSYCH,Enrolled
+2023-0065,Hercules G. Sharma,2,Man,BSBIO,Enrolled
+2023-0066,Hermione H. Patel,2,Woman,BSED-FIL,Enrolled
+2023-0067,Odysseus I. Tran,2,Man,BSE,Enrolled
+2023-0068,Orpheus J. Nguyen,2,Man,BSIT,Enrolled
+2023-0069,Perseus K. Das,2,Man,BSCS,Enrolled
+2023-0070,Athena L. Lee,2,Woman,BSCHE,Enrolled
