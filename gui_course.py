@@ -32,7 +32,7 @@ class CoursePopup(QtWidgets.QDialog):
         self.addCourseBtn.setGeometry(QtCore.QRect(190, 90, 101, 23))
         self.addCourseBtn.setStyleSheet("background-color: gray; color: #fff;")
         self.addCourseBtn.setObjectName("addCourseBtn")
-        self.addCourseBtn.setEnabled(False)  # Initially disabled
+        self.addCourseBtn.setEnabled(True)
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -125,9 +125,7 @@ class CoursePopup(QtWidgets.QDialog):
         
     def closeEvent(self, event):
         # Get the selected course from the Ui_mainWindow instance
-        selected_course = self.parent().selected_course
-        if selected_course:
-            self.courseSelectComboBox.setCurrentText(selected_course)
+        self.closed.emit()
 
     # Retranslate elements in setupUI
     

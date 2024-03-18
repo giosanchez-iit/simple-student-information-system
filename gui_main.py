@@ -174,7 +174,7 @@ class Ui_mainWindow(object):
     
     def edit_course_popup(self):
         selected_course = self.courseSelectComboBox.currentText()
-        if selected_course != '- All Courses -':
+        if selected_course != '- All Students -' and selected_course != '= Not Enrolled =':
             course_code = selected_course.split()[0]
             course_info = Utils.courseRead(Utils.courseFind(course_code))
             course_code, course_description = course_info[:2]
@@ -185,7 +185,7 @@ class Ui_mainWindow(object):
     
     def delete_course_popup(self):
         selected_course = self.courseSelectComboBox.currentText()
-        if selected_course != '- All Courses -':
+        if selected_course != '- All Students -' and selected_course != '= Not Enrolled =':
             course_code = selected_course.split()[0]
             course_info = Utils.courseRead(Utils.courseFind(course_code))
             course_code, course_description = course_info[:2]
@@ -196,7 +196,8 @@ class Ui_mainWindow(object):
     
     def update_course_combo_box(self):
         self.courseSelectComboBox.clear()
-        self.courseSelectComboBox.addItem("- All Courses -")
+        self.courseSelectComboBox.addItem("- All Students -")
+        self.courseSelectComboBox.addItem("= Not Enrolled =")
         Utils.courseList(self.courseSelectComboBox, "courses.csv")
         
     def update_student_table(self):
@@ -217,34 +218,40 @@ class Ui_mainWindow(object):
             next(reader)  # Skip header
             for row in reader:
                 # Check if the course code matches the course to display
-                if row[4] == course_to_display or course_to_display == '-':
-                    # Insert a new row
-                    row_position = qtable_widget.rowCount()
-                    qtable_widget.insertRow(row_position)
-                    # Populate columns
-                    for column, value in enumerate(row):  # Include all columns
-                        item = QTableWidgetItem(value)
-                        qtable_widget.setItem(row_position, column, item)
-                    # Add 'edit' button
-                    edit_button = QPushButton('Edit')
-                    edit_button.setStyleSheet("background-color:rgb(251, 141, 26); color:rgb(255, 255, 255);")
-                    id_number = row[0]
-                    # Connect the 'clicked' signal of the button to the edit_student_popup method of Ui_mainWindow class
-                    edit_button.clicked.connect(lambda _, id_number=id_number: self.edit_student_popup(id_number))
+                if course_to_display == '=':
+                    if row[4] == '' or row[4] == '-':  # Check if course code is blank or '-'
+                        self.add_row(qtable_widget, row)
+                elif row[4] == course_to_display or course_to_display == '-':
+                    self.add_row(qtable_widget, row)
 
-                    qtable_widget.setCellWidget(row_position, 6, edit_button)
-                    # Add 'delete' button
-                    delete_button = QPushButton('Delete')
-                    delete_button.setStyleSheet("background-color:rgb(232, 8, 62); color:rgb(255, 255, 255);")
-                    delete_button.clicked.connect(lambda _, id_number=id_number: self.delete_student_popup(id_number))
-                    qtable_widget.setCellWidget(row_position, 7, delete_button)
-                    # Set Headers (You may want to set headers outside the loop)
-                    qtable_widget.setHorizontalHeaderLabels(["ID Number", "Name", "Year Level", "Gender", "Course Code", "Enrollment Status", " ", " "])
-         
+    def add_row(self, qtable_widget, row):
+        # Insert a new row
+        row_position = qtable_widget.rowCount()
+        qtable_widget.insertRow(row_position)
+        # Populate columns
+        for column, value in enumerate(row):  # Include all columns
+            item = QTableWidgetItem(value)
+            qtable_widget.setItem(row_position, column, item)
+        # Add 'edit' button
+        edit_button = QPushButton('Edit')
+        edit_button.setStyleSheet("background-color:rgb(251, 141, 26); color:rgb(255, 255, 255);")
+        id_number = row[0]
+        # Connect the 'clicked' signal of the button to the edit_student_popup method of Ui_mainWindow class
+        edit_button.clicked.connect(lambda _, id_number=id_number: self.edit_student_popup(id_number))
+
+        qtable_widget.setCellWidget(row_position, 6, edit_button)
+        # Add 'delete' button
+        delete_button = QPushButton('Delete')
+        delete_button.setStyleSheet("background-color:rgb(232, 8, 62); color:rgb(255, 255, 255);")
+        delete_button.clicked.connect(lambda _, id_number=id_number: self.delete_student_popup(id_number))
+        qtable_widget.setCellWidget(row_position, 7, delete_button)
+        # Set Headers (You may want to set headers outside the loop)
+        qtable_widget.setHorizontalHeaderLabels(["ID Number", "Name", "Year Level", "Gender", "Course Code", "Enrollment Status", " ", " "])
+        
     # Button Behaviour
     def update_button_state(self):
         selected_course = self.courseSelectComboBox.currentText()
-        if selected_course == '- All Courses -':
+        if selected_course == '- All Students -' or selected_course == '= Not Enrolled =':
             self.courseUpdate.setStyleSheet("background-color: gray; color: #fff;")
             self.courseDelete.setStyleSheet("background-color: gray; color: #fff;")
             self.courseUpdate.setEnabled(False)
